@@ -26,6 +26,7 @@ test('Open Gate Button', async () => {
     const newButton = await wrapper.findByText(/Open Gate/i);
 
     expect(newButton).toBeVisible();
+    expect(newButton.disabled).toBeFalsy();
 })
 
 test('Lock Gate Button', async () => {
@@ -76,4 +77,23 @@ test('Locked/Unlocked and LED class get changed', async () => {
     expect(locked).toBeVisible();
     expect(closed.classList).toContain("red-led");
     expect(locked.classList).toContain("red-led");
+})
+
+test('Open disabled when locked', async () => {
+    const wrapper = rtl.render(<Dashboard />);
+    const lock = wrapper.getByText(/lock gate/i);
+    const close = wrapper.getByText(/close gate/i);
+
+    rtl.act(() => {
+        rtl.fireEvent.click(close);
+    })
+
+    rtl.act(() => {
+        rtl.fireEvent.click(lock);
+    })
+
+    const open = await wrapper.findByText(/open gate/i);
+
+    expect(open.disabled).toBeTruthy();
+
 })
